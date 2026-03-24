@@ -1,10 +1,10 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, CreditCard, Activity } from 'lucide-react';
+import { TrendingUp, TrendingDown, CreditCard, Activity, Download, Globe } from 'lucide-react';
 import { useFinance } from '../contexts/FinanceContext';
+import { useCurrency } from '../contexts/CurrencyContext';
+import { generateFinancialReport } from '../services/reportService';
 import './Dashboard.css';
 
-const SummaryCard = ({ title, amount, icon: Icon, color, trend }) => (
+const SummaryCard = ({ title, amount, icon: Icon, color, trend, symbol }) => (
   <div className="summary-card glass-card">
     <div className="card-header">
       <div className="icon-box" style={{ background: `${color}20`, color }}>
@@ -13,7 +13,7 @@ const SummaryCard = ({ title, amount, icon: Icon, color, trend }) => (
       <span className="card-title">{title}</span>
     </div>
     <div className="card-body">
-      <h2 className="amount">${amount.toLocaleString()}</h2>
+      <h2 className="amount">{symbol}{amount.toLocaleString()}</h2>
       {trend && (
         <div className={`trend ${trend > 0 ? 'up' : 'down'}`}>
           {trend > 0 ? '+' : ''}{trend}% from last month
@@ -25,11 +25,16 @@ const SummaryCard = ({ title, amount, icon: Icon, color, trend }) => (
 
 const Dashboard = () => {
   const { incomes, expenses, loans } = useFinance();
+  const { currency, currencies, changeCurrency } = useCurrency();
 
   const totalIncome = incomes.reduce((acc, curr) => acc + curr.amount, 0);
   const totalExpense = expenses.reduce((acc, curr) => acc + curr.amount, 0);
   const totalLoanBalance = loans.reduce((acc, curr) => acc + curr.remainingBalance, 0);
   const totalEMI = loans.reduce((acc, curr) => acc + curr.emi, 0);
+
+  const handleDownloadReport = () => {
+    generateFinancialReport(incomes, expenses, loans);
+  };
 
   // Simple Health Score Logic as per README
   const calculateHealthScore = () => {
@@ -44,31 +49,47 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-      <header className="page-header">
-        <h1 className="serif">Financial Overview</h1>
-        <p className="subtitle">Track your path to becoming debt-free.</p>
+      <header className="page-header flex-between">
+        <div>
+            <h1 className="serif">Financial Overview</h1>
+            <p className="subtitle">Track your path to becoming debt-free.</p>
+        </div>
+        <div className="header-actions">
+            <div className="currency-selector">
+                <Globe size={18} />
+                <select value={currency.code} onChange={(e) => changeCurrency(e.target.value)}>
+                    {currencies.map(c => <option key={c.code} value={c.code}>{c.code}</option>)}
+                </select>
+            </div>
+            <button className="btn-secondary flex-center gap-2" onClick={handleDownloadReport}>
+                <Download size={18} /> Report
+            </button>
+        </div>
       </header>
 
       <div className="summary-grid">
         <SummaryCard 
-          title="Total Monthly Income" 
+          title="Monthly Income" 
           amount={totalIncome || 5000} 
           icon={TrendingUp} 
           color="#10b981" 
           trend={12}
+          symbol={currency.symbol}
         />
         <SummaryCard 
-          title="Total Expenses" 
+          title="Total Spending" 
           amount={totalExpense || 1200} 
           icon={TrendingDown} 
           color="#ef4444" 
           trend={-5}
+          symbol={currency.symbol}
         />
         <SummaryCard 
-          title="Total Debt" 
+          title="Debt Portfolio" 
           amount={totalLoanBalance || 45000} 
           icon={CreditCard} 
           color="#3b82f6" 
+          symbol={currency.symbol}
         />
         <div className="health-card glass-card">
           <div className="health-circle">

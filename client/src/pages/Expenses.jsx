@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import { Plus, Trash2, Receipt, Tag } from 'lucide-react';
 import { useFinance } from '../contexts/FinanceContext';
+import { useCurrency } from '../contexts/CurrencyContext';
 import './FinancePages.css';
 
 const Expenses = () => {
   const { expenses, api, fetchData } = useFinance();
+  const { currency } = useCurrency();
   const [formData, setFormData] = useState({
     amount: '',
     category: 'General',
@@ -98,7 +98,7 @@ const Expenses = () => {
                   </div>
                 </div>
                 <div className="item-actions">
-                    <div className="item-amount negative">-${item.amount.toLocaleString()}</div>
+                    <div className="item-amount negative">-{currency.symbol}{item.amount.toLocaleString()}</div>
                     <button onClick={() => handleDelete(item._id)} className="delete-btn">
                         <Trash2 size={16} />
                     </button>

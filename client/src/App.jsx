@@ -1,8 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
-import { FinanceProvider } from './contexts/FinanceContext';
 import Dashboard from './pages/Dashboard';
 import Simulator from './pages/Simulator';
+import Income from './pages/Income';
+import Expenses from './pages/Expenses';
+import Loans from './pages/Loans';
+import Auth from './pages/Auth';
+import { FinanceProvider } from './contexts/FinanceContext';
+import { CurrencyProvider } from './contexts/CurrencyContext';
 import { LayoutDashboard, Wallet, Receipt, Calculator, User as UserIcon, Zap } from 'lucide-react';
 import './App.css';
 
@@ -24,24 +29,39 @@ const Sidebar = () => (
 );
 
 function App() {
-  return (
-    <FinanceProvider>
+  const isAuthenticated = !!localStorage.getItem('token');
+
+  if (!isAuthenticated) {
+    return (
       <Router>
-        <div className="app-layout">
-          <Sidebar />
-          <main className="content">
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/simulator" element={<Simulator />} />
-              <Route path="/income" element={<div className="container">Income Page (Coming Soon)</div>} />
-              <Route path="/expenses" element={<div className="container">Expenses Page (Coming Soon)</div>} />
-              <Route path="/loans" element={<div className="container">Loans Page (Coming Soon)</div>} />
-              <Route path="*" element={<Navigate to="/" />} />
-            </Routes>
-          </main>
-        </div>
+        <Routes>
+          <Route path="/auth" element={<Auth />} />
+          <Route path="*" element={<Navigate to="/auth" />} />
+        </Routes>
       </Router>
-    </FinanceProvider>
+    );
+  }
+
+  return (
+    <CurrencyProvider>
+      <FinanceProvider>
+        <Router>
+          <div className="app-layout">
+            <Sidebar />
+            <main className="content">
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/simulator" element={<Simulator />} />
+                <Route path="/income" element={<Income />} />
+                <Route path="/expenses" element={<Expenses />} />
+                <Route path="/loans" element={<Loans />} />
+                <Route path="*" element={<Navigate to="/" />} />
+              </Routes>
+            </main>
+          </div>
+        </Router>
+      </FinanceProvider>
+    </CurrencyProvider>
   );
 }
 

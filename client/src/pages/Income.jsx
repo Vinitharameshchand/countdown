@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import { Plus, Trash2, Wallet, Calendar, DollarSign } from 'lucide-react';
 import { useFinance } from '../contexts/FinanceContext';
+import { useCurrency } from '../contexts/CurrencyContext';
 import './FinancePages.css';
 
 const Income = () => {
   const { incomes, api, fetchData } = useFinance();
+  const { currency } = useCurrency();
   const [formData, setFormData] = useState({
     amount: '',
     source: '',
@@ -86,7 +86,7 @@ const Income = () => {
                     <div className="item-date">{new Date(item.date).toLocaleDateString()}</div>
                   </div>
                 </div>
-                <div className="item-amount positive">+${item.amount.toLocaleString()}</div>
+                <div className="item-amount positive">+{currency.symbol}{item.amount.toLocaleString()}</div>
               </motion.div>
             )) : (
               <div className="placeholder-text">No income recorded yet.</div>
