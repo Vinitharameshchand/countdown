@@ -12,7 +12,7 @@ export const FinanceProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const api = axios.create({
-    baseURL: 'http://localhost:5000/api',
+    baseURL: 'http://localhost:5001/api',
     headers: {
       Authorization: `Bearer ${localStorage.getItem('token')}`
     }

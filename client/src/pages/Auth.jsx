@@ -14,7 +14,7 @@ const Auth = () => {
     setError('');
     const endpoint = isLogin ? '/api/auth/login' : '/api/auth/signup';
     try {
-      const res = await axios.post(`http://localhost:5000${endpoint}`, formData);
+      const res = await axios.post(`http://localhost:5001${endpoint}`, formData);
       localStorage.setItem('token', res.data.token);
       window.location.href = '/'; // Refresh to boostrap data
     } catch (err) {

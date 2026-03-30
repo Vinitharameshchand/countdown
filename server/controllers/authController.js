@@ -33,7 +33,7 @@ exports.signup = async (req, res) => {
     res.status(201).json({ token, user: { id: user._id, name, email } });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server error');
+    res.status(500).json({ message: 'Server error', details: err.message });
   }
 };
 
@@ -61,6 +61,6 @@ exports.login = async (req, res) => {
     res.json({ token, user: { id: user._id, name: user.name, email } });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server error');
+    res.status(500).json({ message: 'Server error', details: err.message });
   }
 };
