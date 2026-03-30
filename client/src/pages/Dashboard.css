@@ -6,8 +6,15 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .page-header {
@@ -15,35 +22,35 @@
 }
 
 .flex-between {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .header-actions {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
 }
 
 .currency-selector {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: var(--bg-secondary);
-    padding: 0.5rem 1rem;
-    border-radius: 12px;
-    border: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--bg-secondary);
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
 }
 
 .currency-selector select {
-    background: transparent;
-    border: none;
-    color: var(--text-primary);
-    font-family: inherit;
-    font-weight: 600;
-    outline: none;
-    cursor: pointer;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
 }
 
 .page-header h1 {
@@ -99,8 +106,85 @@
   margin-top: 0.5rem;
 }
 
-.trend.up { color: #10b981; }
-.trend.down { color: #ef4444; }
+/* ============================================ */
+/* RESPONSIVE DASHBOARD STYLES */
+/* ============================================ */
+@media (max-width: 768px) {
+  .page-header h1 {
+    font-size: clamp(1.5rem, 5vw, 2rem);
+  }
+
+  .flex-between {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .header-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .currency-selector {
+    flex: 1;
+    min-width: 150px;
+  }
+
+  .summary-grid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+  }
+
+  .icon-box {
+    width: 40px;
+    height: 40px;
+  }
+
+  .amount {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .page-header {
+    margin-bottom: 1rem;
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .summary-card {
+    gap: 1rem;
+  }
+
+  .icon-box {
+    width: 36px;
+    height: 36px;
+  }
+
+  .amount {
+    font-size: 1.1rem;
+  }
+
+  .card-title {
+    font-size: 0.8rem;
+  }
+}
+
+
+.trend.up {
+  color: #10b981;
+}
+
+.trend.down {
+  color: #ef4444;
+}
 
 /* Health Card */
 .health-card {
@@ -137,7 +221,9 @@
 }
 
 @keyframes progress {
-  0% { stroke-dasharray: 0 100; }
+  0% {
+    stroke-dasharray: 0 100;
+  }
 }
 
 .percentage {
@@ -182,7 +268,7 @@
 }
 
 .placeholder-icon {
-    opacity: 0.2;
+  opacity: 0.2;
 }
 
 .loan-items {
@@ -200,7 +286,7 @@
 }
 
 .loan-item.placeholder {
-    justify-content: center;
-    color: var(--text-secondary);
-    font-style: italic;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-style: italic;
 }

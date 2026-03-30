@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { Plus, Calculator, Calendar, Percent, Landmark, Trash2 } from 'lucide-react';
 import { useFinance } from '../contexts/FinanceContext';
 import { useCurrency } from '../contexts/CurrencyContext';
@@ -37,46 +38,46 @@ const Loans = () => {
           <h3><Landmark size={20} /> New Loan Details</h3>
           <form onSubmit={handleSubmit} className="styled-form">
             <div className="input-group">
-                <label>Principal Amount ($)</label>
-                <input 
-                    type="number" 
-                    value={formData.loanAmount}
-                    onChange={(e) => setFormData({...formData, loanAmount: e.target.value})}
-                    placeholder="50000"
-                    required
-                />
+              <label>Principal Amount ($)</label>
+              <input
+                type="number"
+                value={formData.loanAmount}
+                onChange={(e) => setFormData({ ...formData, loanAmount: e.target.value })}
+                placeholder="50000"
+                required
+              />
             </div>
             <div className="grid-2">
-                <div className="input-group">
-                    <label>Interest Rate (%)</label>
-                    <input 
-                        type="number" 
-                        step="0.01"
-                        value={formData.interestRate}
-                        onChange={(e) => setFormData({...formData, interestRate: e.target.value})}
-                        placeholder="8.5"
-                        required
-                    />
-                </div>
-                <div className="input-group">
-                    <label>Tenure (Months)</label>
-                    <input 
-                        type="number" 
-                        value={formData.tenureMonths}
-                        onChange={(e) => setFormData({...formData, tenureMonths: e.target.value})}
-                        placeholder="60"
-                        required
-                    />
-                </div>
+              <div className="input-group">
+                <label>Interest Rate (%)</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={formData.interestRate}
+                  onChange={(e) => setFormData({ ...formData, interestRate: e.target.value })}
+                  placeholder="8.5"
+                  required
+                />
+              </div>
+              <div className="input-group">
+                <label>Tenure (Months)</label>
+                <input
+                  type="number"
+                  value={formData.tenureMonths}
+                  onChange={(e) => setFormData({ ...formData, tenureMonths: e.target.value })}
+                  placeholder="60"
+                  required
+                />
+              </div>
             </div>
             <div className="input-group">
-                <label>Start Date</label>
-                <input 
-                    type="date" 
-                    value={formData.startDate}
-                    onChange={(e) => setFormData({...formData, startDate: e.target.value})}
-                    required
-                />
+              <label>Start Date</label>
+              <input
+                type="date"
+                value={formData.startDate}
+                onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                required
+              />
             </div>
             <button type="submit" className="btn-primary">Add Loan</button>
           </form>
@@ -87,38 +88,38 @@ const Loans = () => {
           <h3>Active Portfolios</h3>
           <div className="loans-grid">
             {loans.map((loan) => (
-              <motion.div 
-                key={loan._id} 
+              <motion.div
+                key={loan._id}
                 className="loan-card glass-card"
                 whileHover={{ scale: 1.02 }}
               >
                 <div className="loan-card-header">
-                   <div className="loan-title">
-                       <Landmark size={20} color="var(--accent-primary)" />
-                       <span>Standard Loan</span>
-                   </div>
-                   <div className="loan-emi">EMI: {currency.symbol}{loan.emi.toLocaleString()}</div>
+                  <div className="loan-title">
+                    <Landmark size={20} color="var(--accent-primary)" />
+                    <span>Standard Loan</span>
+                  </div>
+                  <div className="loan-emi">EMI: {currency.symbol}{loan.emi.toLocaleString()}</div>
                 </div>
-                
+
                 <div className="loan-metrics">
-                    <div className="metric">
-                        <span className="label">Remaining</span>
-                        <div className="value">{currency.symbol}{loan.remainingBalance.toLocaleString()}</div>
+                  <div className="metric">
+                    <span className="label">Remaining</span>
+                    <div className="value">{currency.symbol}{loan.remainingBalance.toLocaleString()}</div>
+                  </div>
+                  <div className="metric">
+                    <span className="label">Progress</span>
+                    <div className="progress-bar-container">
+                      <div
+                        className="progress-bar"
+                        style={{ width: `${((loan.loanAmount - loan.remainingBalance) / loan.loanAmount) * 100}%` }}
+                      ></div>
                     </div>
-                    <div className="metric">
-                        <span className="label">Progress</span>
-                        <div className="progress-bar-container">
-                            <div 
-                                className="progress-bar" 
-                                style={{ width: `${((loan.loanAmount - loan.remainingBalance) / loan.loanAmount) * 100}%` }}
-                            ></div>
-                        </div>
-                    </div>
+                  </div>
                 </div>
 
                 <div className="loan-footer">
-                    <span>{loan.interestRate}% Interest</span>
-                    <span>{loan.tenureMonths} Months Left</span>
+                  <span>{loan.interestRate}% Interest</span>
+                  <span>{loan.tenureMonths} Months Left</span>
                 </div>
               </motion.div>
             ))}

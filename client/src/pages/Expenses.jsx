@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { Plus, Trash2, Receipt, Tag } from 'lucide-react';
 import { useFinance } from '../contexts/FinanceContext';
 import { useCurrency } from '../contexts/CurrencyContext';
@@ -48,9 +49,9 @@ const Expenses = () => {
           <form onSubmit={handleSubmit} className="styled-form">
             <div className="input-group">
               <label>Category</label>
-              <select 
+              <select
                 value={formData.category}
-                onChange={(e) => setFormData({...formData, category: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                 className="styled-select"
               >
                 {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
@@ -58,20 +59,20 @@ const Expenses = () => {
             </div>
             <div className="input-group">
               <label>Amount ($)</label>
-              <input 
-                type="number" 
-                placeholder="0.00" 
+              <input
+                type="number"
+                placeholder="0.00"
                 value={formData.amount}
-                onChange={(e) => setFormData({...formData, amount: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
                 required
               />
             </div>
             <div className="input-group">
               <label>Date</label>
-              <input 
-                type="date" 
+              <input
+                type="date"
                 value={formData.date}
-                onChange={(e) => setFormData({...formData, date: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                 required
               />
             </div>
@@ -84,8 +85,8 @@ const Expenses = () => {
           <h3>History</h3>
           <div className="finance-list">
             {expenses.length > 0 ? expenses.map((item) => (
-              <motion.div 
-                key={item._id} 
+              <motion.div
+                key={item._id}
                 className="list-item"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -98,10 +99,10 @@ const Expenses = () => {
                   </div>
                 </div>
                 <div className="item-actions">
-                    <div className="item-amount negative">-{currency.symbol}{item.amount.toLocaleString()}</div>
-                    <button onClick={() => handleDelete(item._id)} className="delete-btn">
-                        <Trash2 size={16} />
-                    </button>
+                  <div className="item-amount negative">-{currency.symbol}{item.amount.toLocaleString()}</div>
+                  <button onClick={() => handleDelete(item._id)} className="delete-btn">
+                    <Trash2 size={16} />
+                  </button>
                 </div>
               </motion.div>
             )) : (

@@ -1,6 +1,8 @@
+import React, { useState } from 'react';
 import { Plus, Trash2, Wallet, Calendar, DollarSign } from 'lucide-react';
 import { useFinance } from '../contexts/FinanceContext';
 import { useCurrency } from '../contexts/CurrencyContext';
+import { motion } from 'framer-motion';
 import './FinancePages.css';
 
 const Income = () => {
@@ -37,30 +39,30 @@ const Income = () => {
           <form onSubmit={handleSubmit} className="styled-form">
             <div className="input-group">
               <label>Source</label>
-              <input 
-                type="text" 
-                placeholder="e.g. Salary, Freelance" 
+              <input
+                type="text"
+                placeholder="e.g. Salary, Freelance"
                 value={formData.source}
-                onChange={(e) => setFormData({...formData, source: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, source: e.target.value })}
                 required
               />
             </div>
             <div className="input-group">
               <label>Amount ($)</label>
-              <input 
-                type="number" 
-                placeholder="0.00" 
+              <input
+                type="number"
+                placeholder="0.00"
                 value={formData.amount}
-                onChange={(e) => setFormData({...formData, amount: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
                 required
               />
             </div>
             <div className="input-group">
               <label>Date</label>
-              <input 
-                type="date" 
+              <input
+                type="date"
                 value={formData.date}
-                onChange={(e) => setFormData({...formData, date: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                 required
               />
             </div>
@@ -73,8 +75,8 @@ const Income = () => {
           <h3>History</h3>
           <div className="finance-list">
             {incomes.length > 0 ? incomes.map((item) => (
-              <motion.div 
-                key={item._id} 
+              <motion.div
+                key={item._id}
                 className="list-item"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}

@@ -8,7 +8,7 @@
 // All pages are wrapped in Context Providers for global state management
 
 // Import React and routing libraries
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
 
 // Import page components
@@ -18,13 +18,14 @@ import Income from './pages/Income';            // Income tracking page
 import Expenses from './pages/Expenses';        // Expense tracking page
 import Loans from './pages/Loans';              // Loan management page
 import Auth from './pages/Auth';                // Login/Signup page
+import { LandingPage } from '@landingpage';     // Public landing page
 
 // Import context providers for global state
 import { FinanceProvider } from './contexts/FinanceContext';  // Income/expense/loan state
 import { CurrencyProvider } from './contexts/CurrencyContext';  // Currency settings
 
 // Import icons from lucide-react for UI
-import { LayoutDashboard, Wallet, Receipt, Calculator, User as UserIcon, Zap } from 'lucide-react';
+import { LayoutDashboard, Wallet, Receipt, Calculator, User as UserIcon, Zap, Menu, X } from 'lucide-react';
 
 // Import App styles
 import './App.css';
@@ -34,27 +35,32 @@ import './App.css';
 // ========================================
 // Shows navigation menu on the left side of the app
 // Links to all main pages (Dashboard, Simulator, Income, Expenses, Loans)
-const Sidebar = () => (
-  <nav className="sidebar glass-card">
+const Sidebar = ({ isOpen, onClose }) => (
+  <nav className={`sidebar glass-card ${isOpen ? 'open' : ''}`}>
+    {/* Close button for mobile */}
+    <button className="close-btn" onClick={onClose} aria-label="Close menu">
+      <X size={24} />
+    </button>
+
     {/* App logo/title */}
     <div className="logo serif">Countdown</div>
 
     {/* Navigation links */}
     <ul className="nav-links">
       {/* Dashboard: Financial overview */}
-      <li><Link to="/"><LayoutDashboard size={20} /> Dashboard</Link></li>
+      <li><Link to="/dashboard" onClick={onClose}><LayoutDashboard size={20} /> Dashboard</Link></li>
 
       {/* Simulator: Test loan payoff scenarios */}
-      <li><Link to="/simulator"><Zap size={20} /> Simulator</Link></li>
+      <li><Link to="/simulator" onClick={onClose}><Zap size={20} /> Simulator</Link></li>
 
       {/* Income: Track income sources */}
-      <li><Link to="/income"><Wallet size={20} /> Income</Link></li>
+      <li><Link to="/income" onClick={onClose}><Wallet size={20} /> Income</Link></li>
 
       {/* Expenses: Track spending */}
-      <li><Link to="/expenses"><Receipt size={20} /> Expenses</Link></li>
+      <li><Link to="/expenses" onClick={onClose}><Receipt size={20} /> Expenses</Link></li>
 
       {/* Loans: Manage loans and EMI payments */}
-      <li><Link to="/loans"><Calculator size={20} /> Loans</Link></li>
+      <li><Link to="/loans" onClick={onClose}><Calculator size={20} /> Loans</Link></li>
     </ul>
 
     {/* User profile section */}
@@ -66,6 +72,63 @@ const Sidebar = () => (
 );
 
 // ========================================
+// PROTECTED ROUTES WRAPPER
+// ========================================
+const ProtectedRoutesWrapper = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => (
+  <CurrencyProvider>
+    <FinanceProvider>
+      <div className="app-layout">
+        {/* Mobile menu overlay */}
+        {isMobileMenuOpen && (
+          <div
+            className="mobile-menu-overlay"
+            onClick={() => setIsMobileMenuOpen(false)}
+          ></div>
+        )}
+
+        {/* Left sidebar with navigation */}
+        <Sidebar
+          isOpen={isMobileMenuOpen}
+          onClose={() => setIsMobileMenuOpen(false)}
+        />
+
+        {/* Main content area */}
+        <main className="content">
+          {/* Mobile hamburger menu button */}
+          <button
+            className="mobile-menu-btn"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+
+          <Routes>
+            {/* Dashboard: Home page showing financial overview */}
+            <Route path="/dashboard" element={<Dashboard />} />
+
+            {/* Simulator: Test "what-if" loan payoff scenarios */}
+            <Route path="/simulator" element={<Simulator />} />
+
+            {/* Income: Add and view income entries */}
+            <Route path="/income" element={<Income />} />
+
+            {/* Expenses: Add and view expense entries */}
+            <Route path="/expenses" element={<Expenses />} />
+
+            {/* Loans: Create loans, track EMI, view details */}
+            <Route path="/loans" element={<Loans />} />
+
+            {/* Default: Redirect to dashboard */}
+            <Route path="*" element={<Navigate to="/dashboard" />} />
+          </Routes>
+        </main>
+      </div>
+    </FinanceProvider>
+  </CurrencyProvider>
+);
+
+// ========================================
 // MAIN APP COMPONENT
 // ========================================
 function App() {
@@ -73,65 +136,38 @@ function App() {
   // JWT token is stored in localStorage after successful login/signup
   const isAuthenticated = !!localStorage.getItem('token');
 
-  // Step 2: If user is NOT authenticated, show ONLY the Auth page
-  if (!isAuthenticated) {
-    return (
-      <Router>
-        <Routes>
-          {/* Auth page: Login or Signup */}
-          <Route path="/auth" element={<Auth />} />
+  // State for mobile menu
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-          {/* Redirect any other route to /auth */}
-          <Route path="*" element={<Navigate to="/auth" />} />
-        </Routes>
-      </Router>
-    );
-  }
-
-  // Step 3: If user IS authenticated, show the main app with all pages
-  // Wrap everything in providers for global state management
+  // Return the Router with routing logic
   return (
-    <CurrencyProvider>
-      {/* CurrencyProvider: Manages currency selection (USD, INR, etc.) */}
+    <Router>
+      <Routes>
+        {/* Landing Page: Public page visible to everyone */}
+        <Route path="/" element={<LandingPage />} />
 
-      <FinanceProvider>
-        {/* FinanceProvider: Manages income, expense, and loan data fetched from server */}
+        {/* Auth page: Login or Signup for unauthenticated users */}
+        <Route path="/auth" element={<Auth />} />
 
-        <Router>
-          {/* Router: Enables navigation between pages */}
+        {/* Protected routes: Dashboard and app pages */}
+        {isAuthenticated && (
+          <Route
+            path="/*"
+            element={
+              <ProtectedRoutesWrapper
+                isMobileMenuOpen={isMobileMenuOpen}
+                setIsMobileMenuOpen={setIsMobileMenuOpen}
+              />
+            }
+          />
+        )}
 
-          <div className="app-layout">
-            {/* Left sidebar with navigation */}
-            <Sidebar />
-
-            {/* Main content area */}
-            <main className="content">
-              <Routes>
-                {/* Route to each page */}
-
-                {/* Dashboard: Home page showing financial overview */}
-                <Route path="/" element={<Dashboard />} />
-
-                {/* Simulator: Test "what-if" loan payoff scenarios */}
-                <Route path="/simulator" element={<Simulator />} />
-
-                {/* Income: Add and view income entries */}
-                <Route path="/income" element={<Income />} />
-
-                {/* Expenses: Add and view expense entries */}
-                <Route path="/expenses" element={<Expenses />} />
-
-                {/* Loans: Create loans, track EMI, view details */}
-                <Route path="/loans" element={<Loans />} />
-
-                {/* Default: Redirect unknown routes to home */}
-                <Route path="*" element={<Navigate to="/" />} />
-              </Routes>
-            </main>
-          </div>
-        </Router>
-      </FinanceProvider>
-    </CurrencyProvider>
+        {/* Redirect unauthenticated users trying to access protected routes to auth */}
+        {!isAuthenticated && (
+          <Route path="/*" element={<Navigate to="/auth" />} />
+        )}
+      </Routes>
+    </Router>
   );
 }
 
