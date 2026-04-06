@@ -25,8 +25,8 @@ app.use(cors({ origin: '*' }));
 app.use(express.json());
 
 // Note: These are commented out but available for security/logging:
-// app.use(helmet());    // Add security headers to HTTP responses
-// app.use(morgan('dev')); // Log HTTP requests in development format
+app.use(helmet());
+app.use(morgan('dev'));
 
 // ========== DATABASE CONNECTION ==========
 // Connect to MongoDB using Mongoose

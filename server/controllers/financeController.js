@@ -38,8 +38,8 @@ exports.addIncome = async (req, res) => {
     // Frontend uses this to update local state and re-render Dashboard
     res.status(201).json(income);
   } catch (err) {
-    // Handle database or validation errors
-    res.status(500).send('Server error');
+    console.error('Income Error:', err.message);
+    res.status(500).json({ message: 'Server error', details: err.message });
   }
 };
 
@@ -60,8 +60,8 @@ exports.getIncomes = async (req, res) => {
     // Step 2: Send array of incomes to frontend
     res.json(incomes);
   } catch (err) {
-    // Handle any database errors
-    res.status(500).send('Server error');
+    console.error('Fetch Income Error:', err.message);
+    res.status(500).json({ message: 'Server error', details: err.message });
   }
 };
 
@@ -95,8 +95,8 @@ exports.addExpense = async (req, res) => {
     // Frontend uses this to update state and refresh Dashboard
     res.status(201).json(expense);
   } catch (err) {
-    // Handle database or validation errors
-    res.status(500).send('Server error');
+    console.error('Expense Add Error:', err.message);
+    res.status(500).json({ message: 'Server error', details: err.message });
   }
 };
 
@@ -117,8 +117,8 @@ exports.getExpenses = async (req, res) => {
     // Step 2: Send array of expenses to frontend
     res.json(expenses);
   } catch (err) {
-    // Handle any database errors
-    res.status(500).send('Server error');
+    console.error('Fetch Expense Error:', err.message);
+    res.status(500).json({ message: 'Server error', details: err.message });
   }
 };
 
